@@ -1,0 +1,5 @@
+struct usize {}
+struct u8 {}
+struct i8 {}
+struct unit {}
+struct slice { ptr: &unit, len: usize }

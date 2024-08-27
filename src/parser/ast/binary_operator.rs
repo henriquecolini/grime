@@ -1,0 +1,21 @@
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BinaryOperator {
+	Add,
+	Subtract,
+	Multiply,
+	Divide,
+	Modulo,
+	BitAnd,
+	BitOr,
+	BitXor,
+	LShift,
+	RShift,
+	Eq,
+	Neq,
+	Gt,
+	Lt,
+	Geq,
+	Leq,
+	And,
+	Or,
+}

@@ -1,0 +1,930 @@
+Ok(
+    Program {
+        directives: [
+            Use {
+                name: std,
+                all: true,
+            },
+            Use {
+                name: batpu,
+                all: false,
+            },
+        ],
+        declarations: [
+            Struct(
+                StructDeclaration {
+                    name: Unit,
+                    fields: [],
+                },
+            ),
+            Struct(
+                StructDeclaration {
+                    name: Slice,
+                    fields: [
+                        Field {
+                            name: ptr,
+                            ty: Ref(
+                                Simple(
+                                    Unit,
+                                ),
+                            ),
+                        },
+                        Field {
+                            name: len,
+                            ty: Simple(
+                                usize,
+                            ),
+                        },
+                    ],
+                },
+            ),
+            Variable(
+                Const {
+                    name: PIXEL_X,
+                    ty: Ref(
+                        Simple(
+                            u8,
+                        ),
+                    ),
+                    value: Integer(
+                        240,
+                    ),
+                },
+            ),
+            Variable(
+                Const {
+                    name: PIXEL_Y,
+                    ty: Ref(
+                        Simple(
+                            u8,
+                        ),
+                    ),
+                    value: Integer(
+                        241,
+                    ),
+                },
+            ),
+            Variable(
+                Const {
+                    name: DRAW_PX,
+                    ty: Ref(
+                        Simple(
+                            u8,
+                        ),
+                    ),
+                    value: Integer(
+                        242,
+                    ),
+                },
+            ),
+            Variable(
+                Const {
+                    name: CLEAR_PX,
+                    ty: Ref(
+                        Simple(
+                            u8,
+                        ),
+                    ),
+                    value: Integer(
+                        243,
+                    ),
+                },
+            ),
+            Function(
+                FunctionDeclaration {
+                    name: enable_px,
+                    parameters: [
+                        Parameter {
+                            name: x,
+                            ty: Simple(
+                                u8,
+                            ),
+                        },
+                        Parameter {
+                            name: y,
+                            ty: Simple(
+                                u8,
+                            ),
+                        },
+                    ],
+                    return_type: None,
+                    body: Block {
+                        statements: [
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            PIXEL_X,
+                                        ),
+                                    ),
+                                    value: Variable(
+                                        x,
+                                    ),
+                                },
+                            ),
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            PIXEL_Y,
+                                        ),
+                                    ),
+                                    value: Variable(
+                                        y,
+                                    ),
+                                },
+                            ),
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            DRAW_PX,
+                                        ),
+                                    ),
+                                    value: Integer(
+                                        0,
+                                    ),
+                                },
+                            ),
+                        ],
+                    },
+                },
+            ),
+            Function(
+                FunctionDeclaration {
+                    name: disable_px,
+                    parameters: [
+                        Parameter {
+                            name: x,
+                            ty: Simple(
+                                u8,
+                            ),
+                        },
+                        Parameter {
+                            name: y,
+                            ty: Simple(
+                                u8,
+                            ),
+                        },
+                    ],
+                    return_type: None,
+                    body: Block {
+                        statements: [
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            PIXEL_X,
+                                        ),
+                                    ),
+                                    value: Variable(
+                                        x,
+                                    ),
+                                },
+                            ),
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            PIXEL_Y,
+                                        ),
+                                    ),
+                                    value: Variable(
+                                        y,
+                                    ),
+                                },
+                            ),
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            CLEAR_PX,
+                                        ),
+                                    ),
+                                    value: Integer(
+                                        0,
+                                    ),
+                                },
+                            ),
+                        ],
+                    },
+                },
+            ),
+            Function(
+                FunctionDeclaration {
+                    name: set_px,
+                    parameters: [
+                        Parameter {
+                            name: x,
+                            ty: Simple(
+                                u8,
+                            ),
+                        },
+                        Parameter {
+                            name: y,
+                            ty: Simple(
+                                u8,
+                            ),
+                        },
+                        Parameter {
+                            name: on,
+                            ty: Simple(
+                                bool,
+                            ),
+                        },
+                    ],
+                    return_type: None,
+                    body: Block {
+                        statements: [
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            PIXEL_X,
+                                        ),
+                                    ),
+                                    value: Variable(
+                                        x,
+                                    ),
+                                },
+                            ),
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            PIXEL_Y,
+                                        ),
+                                    ),
+                                    value: Variable(
+                                        y,
+                                    ),
+                                },
+                            ),
+                            VarDeclaration(
+                                Initialized {
+                                    name: addr,
+                                    ty: None,
+                                    value: BinaryOp {
+                                        op: Add,
+                                        left: Variable(
+                                            DRAW_PX,
+                                        ),
+                                        right: Variable(
+                                            on,
+                                        ),
+                                    },
+                                },
+                            ),
+                            Assignment(
+                                AssignStatement {
+                                    lvalue: Deref(
+                                        Variable(
+                                            addr,
+                                        ),
+                                    ),
+                                    value: Integer(
+                                        0,
+                                    ),
+                                },
+                            ),
+                        ],
+                    },
+                },
+            ),
+            Struct(
+                StructDeclaration {
+                    name: Pos,
+                    fields: [
+                        Field {
+                            name: x,
+                            ty: Simple(
+                                i8,
+                            ),
+                        },
+                        Field {
+                            name: y,
+                            ty: Simple(
+                                i8,
+                            ),
+                        },
+                    ],
+                },
+            ),
+            Function(
+                FunctionDeclaration {
+                    name: mergesort,
+                    parameters: [
+                        Parameter {
+                            name: arr,
+                            ty: Ref(
+                                Slice(
+                                    Simple(
+                                        i8,
+                                    ),
+                                ),
+                            ),
+                        },
+                    ],
+                    return_type: None,
+                    body: Block {
+                        statements: [
+                            If(
+                                IfStatement {
+                                    condition: BinaryOp {
+                                        op: Leq,
+                                        left: Accessor {
+                                            base: Variable(
+                                                arr,
+                                            ),
+                                            field: len,
+                                        },
+                                        right: Integer(
+                                            1,
+                                        ),
+                                    },
+                                    then_block: Block {
+                                        statements: [
+                                            Return(
+                                                Unit,
+                                            ),
+                                        ],
+                                    },
+                                    else_block: None,
+                                },
+                            ),
+                            VarDeclaration(
+                                Initialized {
+                                    name: mid,
+                                    ty: None,
+                                    value: BinaryOp {
+                                        op: Divide,
+                                        left: FunctionCall(
+                                            FunctionCall {
+                                                name: len,
+                                                args: [
+                                                    Variable(
+                                                        arr,
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                        right: Integer(
+                                            2,
+                                        ),
+                                    },
+                                },
+                            ),
+                            VarDeclaration(
+                                Initialized {
+                                    name: left,
+                                    ty: None,
+                                    value: Slicer {
+                                        base: Variable(
+                                            arr,
+                                        ),
+                                        from: None,
+                                        until: Some(
+                                            BinaryOp {
+                                                op: Subtract,
+                                                left: Variable(
+                                                    mid,
+                                                ),
+                                                right: Integer(
+                                                    1,
+                                                ),
+                                            },
+                                        ),
+                                    },
+                                },
+                            ),
+                            VarDeclaration(
+                                Initialized {
+                                    name: right,
+                                    ty: None,
+                                    value: Slicer {
+                                        base: Variable(
+                                            arr,
+                                        ),
+                                        from: Some(
+                                            Variable(
+                                                mid,
+                                            ),
+                                        ),
+                                        until: None,
+                                    },
+                                },
+                            ),
+                            FunctionCall(
+                                FunctionCall {
+                                    name: mergesort,
+                                    args: [
+                                        Variable(
+                                            left,
+                                        ),
+                                    ],
+                                },
+                            ),
+                            FunctionCall(
+                                FunctionCall {
+                                    name: mergesort,
+                                    args: [
+                                        Variable(
+                                            right,
+                                        ),
+                                    ],
+                                },
+                            ),
+                            FunctionCall(
+                                FunctionCall {
+                                    name: merge,
+                                    args: [
+                                        Variable(
+                                            arr,
+                                        ),
+                                        Variable(
+                                            left,
+                                        ),
+                                        Variable(
+                                            right,
+                                        ),
+                                    ],
+                                },
+                            ),
+                        ],
+                    },
+                },
+            ),
+            Function(
+                FunctionDeclaration {
+                    name: merge,
+                    parameters: [
+                        Parameter {
+                            name: dst,
+                            ty: Ref(
+                                Slice(
+                                    Simple(
+                                        i8,
+                                    ),
+                                ),
+                            ),
+                        },
+                        Parameter {
+                            name: left,
+                            ty: Ref(
+                                Slice(
+                                    Simple(
+                                        i8,
+                                    ),
+                                ),
+                            ),
+                        },
+                        Parameter {
+                            name: right,
+                            ty: Ref(
+                                Slice(
+                                    Simple(
+                                        i8,
+                                    ),
+                                ),
+                            ),
+                        },
+                    ],
+                    return_type: None,
+                    body: Block {
+                        statements: [
+                            VarDeclaration(
+                                Initialized {
+                                    name: i,
+                                    ty: None,
+                                    value: Integer(
+                                        0,
+                                    ),
+                                },
+                            ),
+                            VarDeclaration(
+                                Initialized {
+                                    name: j,
+                                    ty: None,
+                                    value: Integer(
+                                        0,
+                                    ),
+                                },
+                            ),
+                            VarDeclaration(
+                                Initialized {
+                                    name: k,
+                                    ty: None,
+                                    value: Integer(
+                                        0,
+                                    ),
+                                },
+                            ),
+                            While(
+                                WhileStatement {
+                                    condition: BinaryOp {
+                                        op: And,
+                                        left: BinaryOp {
+                                            op: Lt,
+                                            left: Variable(
+                                                i,
+                                            ),
+                                            right: FunctionCall(
+                                                FunctionCall {
+                                                    name: len,
+                                                    args: [
+                                                        Variable(
+                                                            left,
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        },
+                                        right: BinaryOp {
+                                            op: Lt,
+                                            left: Variable(
+                                                j,
+                                            ),
+                                            right: FunctionCall(
+                                                FunctionCall {
+                                                    name: len,
+                                                    args: [
+                                                        Variable(
+                                                            right,
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        },
+                                    },
+                                    body: Block {
+                                        statements: [
+                                            If(
+                                                IfStatement {
+                                                    condition: BinaryOp {
+                                                        op: Leq,
+                                                        left: Indexer {
+                                                            base: Variable(
+                                                                left,
+                                                            ),
+                                                            index: Variable(
+                                                                i,
+                                                            ),
+                                                        },
+                                                        right: Indexer {
+                                                            base: Variable(
+                                                                right,
+                                                            ),
+                                                            index: Variable(
+                                                                j,
+                                                            ),
+                                                        },
+                                                    },
+                                                    then_block: Block {
+                                                        statements: [
+                                                            Assignment(
+                                                                AssignStatement {
+                                                                    lvalue: Indexer(
+                                                                        Variable(
+                                                                            dst,
+                                                                        ),
+                                                                        Variable(
+                                                                            k,
+                                                                        ),
+                                                                    ),
+                                                                    value: Indexer {
+                                                                        base: Variable(
+                                                                            left,
+                                                                        ),
+                                                                        index: Variable(
+                                                                            i,
+                                                                        ),
+                                                                    },
+                                                                },
+                                                            ),
+                                                            Assignment(
+                                                                AssignStatement {
+                                                                    lvalue: Variable(
+                                                                        i,
+                                                                    ),
+                                                                    value: BinaryOp {
+                                                                        op: Add,
+                                                                        left: Variable(
+                                                                            i,
+                                                                        ),
+                                                                        right: Integer(
+                                                                            1,
+                                                                        ),
+                                                                    },
+                                                                },
+                                                            ),
+                                                            Assignment(
+                                                                AssignStatement {
+                                                                    lvalue: Variable(
+                                                                        k,
+                                                                    ),
+                                                                    value: BinaryOp {
+                                                                        op: Add,
+                                                                        left: Variable(
+                                                                            k,
+                                                                        ),
+                                                                        right: Integer(
+                                                                            1,
+                                                                        ),
+                                                                    },
+                                                                },
+                                                            ),
+                                                        ],
+                                                    },
+                                                    else_block: Some(
+                                                        Block {
+                                                            statements: [
+                                                                Assignment(
+                                                                    AssignStatement {
+                                                                        lvalue: Indexer(
+                                                                            Variable(
+                                                                                dst,
+                                                                            ),
+                                                                            Variable(
+                                                                                k,
+                                                                            ),
+                                                                        ),
+                                                                        value: Indexer {
+                                                                            base: Variable(
+                                                                                right,
+                                                                            ),
+                                                                            index: Variable(
+                                                                                j,
+                                                                            ),
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                Assignment(
+                                                                    AssignStatement {
+                                                                        lvalue: Variable(
+                                                                            j,
+                                                                        ),
+                                                                        value: BinaryOp {
+                                                                            op: Add,
+                                                                            left: Variable(
+                                                                                j,
+                                                                            ),
+                                                                            right: Integer(
+                                                                                1,
+                                                                            ),
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                Assignment(
+                                                                    AssignStatement {
+                                                                        lvalue: Variable(
+                                                                            k,
+                                                                        ),
+                                                                        value: BinaryOp {
+                                                                            op: Add,
+                                                                            left: Variable(
+                                                                                k,
+                                                                            ),
+                                                                            right: Integer(
+                                                                                1,
+                                                                            ),
+                                                                        },
+                                                                    },
+                                                                ),
+                                                            ],
+                                                        },
+                                                    ),
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                },
+                            ),
+                            While(
+                                WhileStatement {
+                                    condition: BinaryOp {
+                                        op: Lt,
+                                        left: Variable(
+                                            i,
+                                        ),
+                                        right: FunctionCall(
+                                            FunctionCall {
+                                                name: len,
+                                                args: [
+                                                    Variable(
+                                                        left,
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                    },
+                                    body: Block {
+                                        statements: [
+                                            Assignment(
+                                                AssignStatement {
+                                                    lvalue: Indexer(
+                                                        Variable(
+                                                            dst,
+                                                        ),
+                                                        Variable(
+                                                            k,
+                                                        ),
+                                                    ),
+                                                    value: Indexer {
+                                                        base: Variable(
+                                                            left,
+                                                        ),
+                                                        index: Variable(
+                                                            i,
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                            Assignment(
+                                                AssignStatement {
+                                                    lvalue: Variable(
+                                                        i,
+                                                    ),
+                                                    value: BinaryOp {
+                                                        op: Add,
+                                                        left: Variable(
+                                                            i,
+                                                        ),
+                                                        right: Integer(
+                                                            1,
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                            Assignment(
+                                                AssignStatement {
+                                                    lvalue: Variable(
+                                                        k,
+                                                    ),
+                                                    value: BinaryOp {
+                                                        op: Add,
+                                                        left: Variable(
+                                                            k,
+                                                        ),
+                                                        right: Integer(
+                                                            1,
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                },
+                            ),
+                            While(
+                                WhileStatement {
+                                    condition: BinaryOp {
+                                        op: Lt,
+                                        left: Variable(
+                                            j,
+                                        ),
+                                        right: FunctionCall(
+                                            FunctionCall {
+                                                name: len,
+                                                args: [
+                                                    Variable(
+                                                        right,
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                    },
+                                    body: Block {
+                                        statements: [
+                                            Assignment(
+                                                AssignStatement {
+                                                    lvalue: Indexer(
+                                                        Variable(
+                                                            dst,
+                                                        ),
+                                                        Variable(
+                                                            k,
+                                                        ),
+                                                    ),
+                                                    value: Indexer {
+                                                        base: Variable(
+                                                            right,
+                                                        ),
+                                                        index: Variable(
+                                                            j,
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                            Assignment(
+                                                AssignStatement {
+                                                    lvalue: Variable(
+                                                        j,
+                                                    ),
+                                                    value: BinaryOp {
+                                                        op: Add,
+                                                        left: Variable(
+                                                            j,
+                                                        ),
+                                                        right: Integer(
+                                                            1,
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                            Assignment(
+                                                AssignStatement {
+                                                    lvalue: Variable(
+                                                        k,
+                                                    ),
+                                                    value: BinaryOp {
+                                                        op: Add,
+                                                        left: Variable(
+                                                            k,
+                                                        ),
+                                                        right: Integer(
+                                                            1,
+                                                        ),
+                                                    },
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                },
+                            ),
+                        ],
+                    },
+                },
+            ),
+            Function(
+                FunctionDeclaration {
+                    name: main,
+                    parameters: [],
+                    return_type: None,
+                    body: Block {
+                        statements: [
+                            VarDeclaration(
+                                Initialized {
+                                    name: arr,
+                                    ty: None,
+                                    value: Array(
+                                        [
+                                            Integer(
+                                                1,
+                                            ),
+                                            Integer(
+                                                0,
+                                            ),
+                                            UnaryOp {
+                                                op: Negate,
+                                                expr: Integer(
+                                                    3,
+                                                ),
+                                            },
+                                            UnaryOp {
+                                                op: Negate,
+                                                expr: Integer(
+                                                    1,
+                                                ),
+                                            },
+                                            Integer(
+                                                4,
+                                            ),
+                                        ],
+                                    ),
+                                },
+                            ),
+                            FunctionCall(
+                                FunctionCall {
+                                    name: mergesort,
+                                    args: [
+                                        UnaryOp {
+                                            op: Ref,
+                                            expr: Variable(
+                                                arr,
+                                            ),
+                                        },
+                                    ],
+                                },
+                            ),
+                            FunctionCall(
+                                FunctionCall {
+                                    name: batpu::print_number,
+                                    args: [
+                                        Indexer {
+                                            base: Variable(
+                                                arr,
+                                            ),
+                                            index: Integer(
+                                                0,
+                                            ),
+                                        },
+                                    ],
+                                },
+                            ),
+                        ],
+                    },
+                },
+            ),
+        ],
+    },
+)

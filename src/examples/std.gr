@@ -1,0 +1,44 @@
+struct Unit {}
+
+struct Slice {
+	ptr: &Unit,
+	len: usize
+}
+
+fn min (a: i8, b: i8) -> i8 {
+    if a < b { return a; }
+    return b;
+}
+
+fn max (a: i8, b: i8) -> i8 {
+    if a > b { return a; }
+    return b;
+}
+
+fn abs (a: i8) -> i8 {
+    if a < 0 { return -a; }
+    return a;
+}
+
+fn mult (a: i8, b: i8) {
+    let acc = 0;
+    let sign = (a >> 7) ^ (b >> 7);
+    let low;
+    let high;
+    if a < b {
+        low = a;
+        high = b;
+    } else {
+        low = b;
+        high = a;
+    }
+    while low > 0 {
+        acc = acc + high;
+        low = low - 1;
+    }
+    if sign {
+        return -acc;
+    } else {
+        return acc;
+    }
+}

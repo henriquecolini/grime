@@ -1,0 +1,109 @@
+const PX_X: &u8              = 240;
+const PX_Y: &u8              = 241;
+const PX_SET: &u8            = 242;
+const PX_CLR: &u8            = 243;
+const PX_GET: &u8            = 244;
+const SCREEN_UPDATE: &u8     = 245;
+const SCREEN_CLRBUF: &u8     = 246;
+const TEXT_PUSH: &u8         = 247;
+const TEXT_UPDATE: &u8       = 248;
+const TEXT_CLRBUF: &u8       = 249;
+const NUMBER_SHOW: &u8       = 250;
+const NUMBER_CLR: &u8        = 251;
+const NUMBER_SET_SIGN: &u8   = 252;
+const NUMBER_SET_USIGN: &u8  = 253;
+const RNG_GET: &u8           = 254;
+const STDIN_GET: &u8         = 255;
+
+fn pos_px (x: u8, y: u8) {
+	*PX_X = x;
+	*PX_Y = y;
+}
+
+fn enable_px (x: u8, y: u8) {
+    pos_px(x, y);
+	*PX_SET = 1;
+}
+
+fn disable_px (x: u8, y: u8) {
+    pos_px(x, y);
+	*PX_CLR = 1;
+}
+
+fn toggle_px (x: u8, y: u8, on: bool) {
+    let addr = PX_SET + on;
+	pos_px(x, y);
+	*addr = 1;
+}
+
+fn read_px (x: u8, y: u8) -> bool {
+    pos_px(x, y);
+    return *PX_GET;
+}
+
+fn update_screen () {
+    *SCREEN_UPDATE = 1;
+}
+
+fn clear_screen_buffer () {
+    *SCREEN_CLRBUF = 1;
+}
+
+fn print_str (value: &const [u8]) {
+    *TEXT_CLRBUF = 1;
+    let i = 0;
+    while i < 10 && i < len(value) {
+        *TEXT_PUSH = value[i];
+    }
+    *TEXT_UPDATE = 1;
+}
+
+fn print_int (value: i8) {
+    *NUMBER_SET_SIGN = 1;
+    *NUMBER_SHOW = value;
+}
+
+fn print_uint (value: u8) {
+    *NUMBER_SET_USIGN = 1;
+    *NUMBER_SHOW = value;
+}
+
+fn random () -> i8 {
+    return *RNG_GET;
+}
+
+fn get_btn (bit: i8) -> bool {
+    return (*STDIN_GET >> bit) & 1 == 1;
+}
+
+fn get_btn_start () -> bool {
+    return get_btn(7);
+}
+
+fn get_btn_select () -> bool {
+    return get_btn(6);
+}
+
+fn get_btn_a () -> bool {
+    return get_btn(5);
+}
+
+fn get_btn_b () -> bool {
+    return get_btn(4);
+}
+
+fn get_btn_up () -> bool {
+    return get_btn(3);
+}
+
+fn get_btn_right () -> bool {
+    return get_btn(2);
+}
+
+fn get_btn_down () -> bool {
+    return get_btn(1);
+}
+
+fn get_btn_left () -> bool {
+    return get_btn(0);
+}

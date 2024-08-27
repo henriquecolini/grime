@@ -1,0 +1,4 @@
+mod A {
+    struct B {}
+}
+use A::B::C;

@@ -1,0 +1,194 @@
+// Special
+semicolon = { ";" }
+colon     = { ":" }
+comma     = { "," }
+equals    = { "=" }
+lparent   = { "(" }
+rparent   = { ")" }
+lsquare   = { "[" }
+rsquare   = { "]" }
+lcurly    = { "{" }
+rcurly    = { "}" }
+asterisk  = { "*" }
+rarrow    = { "->" }
+range     = { ".." }
+
+// Arithmetic Operators
+add      =  { "+" }
+subtract =  { "-" }
+neg      =  { "-" }
+multiply =  { "*" }
+divide   =  { "/" }
+modulo   =  { "%" }
+bit_and  = @{ "&" ~ !"&" }
+bit_or   = @{ "|" ~ !"|" }
+bit_xor  =  { "^" }
+lshift   =  { "<<" }
+rshift   =  { ">>" }
+
+// Logic Operators
+eq  =  { "==" }
+neq =  { "!=" }
+gt  = @{ ">" ~ !"=" ~ !">" }
+lt  = @{ "<" ~ !"=" ~ !"<" }
+geq =  { ">=" }
+leq =  { "<=" }
+and =  { "&&" }
+or  =  { "||" }
+not = @{ "!" ~ !"=" }
+
+// Memory Operators
+deref     =  { "*" }
+ref       = @{ "&" ~ !"const" }
+ref_const =  { "&const" }
+dot       = @{ "." ~ !"." }
+
+// Keywords and identifiers
+
+mod    = @{ "mod" ~ !WORD }
+use    = @{ "use" ~ !WORD }
+type   = @{ "type" ~ !WORD }
+fn     = @{ "fn" ~ !WORD }
+struct = @{ "struct" ~ !WORD }
+const  = @{ "const" ~ !WORD }
+static = @{ "static" ~ !WORD }
+let    = @{ "let" ~ !WORD }
+if     = @{ "if" ~ !WORD }
+else   = @{ "else" ~ !WORD }
+loop   = @{ "loop" ~ !WORD }
+while  = @{ "while" ~ !WORD }
+for    = @{ "for" ~ !WORD }
+in     = @{ "in" ~ !WORD }
+return = @{ "return" ~ !WORD }
+true   = @{ "true" ~ !WORD }
+false  = @{ "false" ~ !WORD }
+
+keyword    = _{ mod | use | type | fn | struct | const | static | let | if | else | loop | while | for | in | return | true | false }
+identifier = ${ !keyword ~ SWORD ~ WORD* }
+path       =  { identifier ~ ("::" ~ identifier)* }
+
+// Types
+
+simple_type    = { path }
+array_type     = { lsquare ~ any_type ~ semicolon ~ expression ~ rsquare }
+slice_type     = { lsquare ~ any_type ~ rsquare }
+ref_type       = { ref ~ any_type }
+ref_const_type = { ref_const ~ any_type }
+any_type       = { simple_type | array_type | slice_type | ref_type | ref_const_type }
+
+// Integers
+
+dec_integer = @{ !("0b" | "0o" | "0x") ~ ASCII_DIGIT+ }
+bin_integer = @{ "0b" ~ ASCII_BIN_DIGIT+ }
+oct_integer = @{ "0o" ~ ASCII_OCT_DIGIT+ }
+hex_integer = @{ "0x" ~ ASCII_HEX_DIGIT+ }
+integer     = ${ dec_integer | bin_integer | oct_integer | hex_integer }
+
+// Strings
+
+character =  {
+    !("\"" | "\\") ~ ANY
+  | ("\\" ~ ("0" | "t" | "n" | "r" | "\"" | "\\"))
+  | ("\\" ~ ("x" ~ ASCII_HEX_DIGIT{2}))
+}
+inner     = ${ character* }
+string    = ${ "\"" ~ inner ~ "\"" }
+
+// Booleans
+
+boolean = { true | false }
+
+// Arrays
+
+array = { lsquare ~ ((expression ~ comma)* ~ expression?) ~ rsquare }
+
+// Function Calls
+
+argument_list = _{ (expression ~ (comma ~ expression)*) }
+func_call     =  { path ~ lparent ~ argument_list? ~ rparent }
+
+// Expressions
+
+accessor = { dot ~ identifier }
+indexer  = { lsquare ~ expression ~ rsquare }
+slicer   = { lsquare ~ ((range ~ !expression) | (expression? ~ range ~ expression?)) ~ rsquare }
+
+exp_binary  = _{ add | subtract | multiply | divide | modulo | bit_and | bit_or | bit_xor | lshift | rshift | eq | neq | gt | lt | geq | leq | and | or }
+exp_unary_l = _{ neg | not | deref | ref | ref_const }
+exp_unary_r = _{ indexer | slicer | accessor }
+
+exp_parent  =  { lparent ~ expression ~ rparent }
+exp_primary = _{ integer | string | boolean | array | func_call | path | exp_parent }
+exp_atom    = _{ exp_unary_l* ~ exp_primary ~ exp_unary_r* }
+expression  =  { exp_atom ~ (exp_binary ~ exp_atom)* }
+
+// LValues
+
+lvalue_unary_l = _{ deref }
+lvalue_unary_r = _{ indexer | accessor }
+
+lvalue_parent  =  { lparent ~ lvalue ~ rparent }
+lvalue_primary = _{ path | lvalue_parent }
+lvalue         =  { lvalue_unary_l* ~ lvalue_primary ~ lvalue_unary_r* }
+
+// Variable declarations
+
+simple_var_decl = { let ~ identifier ~ (colon ~ any_type)? ~ semicolon }
+assign_var_decl = { let ~ identifier ~ (colon ~ any_type)? ~ equals ~ expression ~ semicolon }
+const_var_decl  = { const ~ identifier ~ colon ~ any_type ~ equals ~ expression ~ semicolon }
+static_var_decl = { static ~ identifier ~ colon ~ any_type ~ equals ~ expression ~ semicolon }
+
+var_decl        = { simple_var_decl | assign_var_decl | const_var_decl | static_var_decl }
+global_var_decl = { const_var_decl | static_var_decl }
+
+// Statements
+
+block             = { lcurly ~ statement* ~ rcurly }
+assign_statement  = { lvalue ~ equals ~ expression ~ semicolon }
+return_statement  = { return ~ expression? ~ semicolon }
+func_statement    = { func_call ~ semicolon }
+if_statement      = { if ~ expression ~ block ~ !else }
+if_else_statement = { if ~ expression ~ block ~ else ~ block }
+while_statement   = { while ~ expression ~ block }
+loop_statement    = { loop ~ block }
+for_statement     = { for ~ lvalue ~ in ~ expression ~ block }
+statement         = { block | var_decl | assign_statement | return_statement | func_statement | if_statement | if_else_statement | loop_statement | while_statement | for_statement }
+
+// Function declaration
+
+parameter        = { identifier ~ colon ~ any_type }
+parameter_list   = { (parameter ~ (comma ~ parameter)*) }
+func_declaration = { fn ~ identifier ~ lparent ~ parameter_list? ~ rparent ~ (rarrow ~ any_type)? ~ block }
+
+// Struct declaration
+
+field              = { identifier ~ colon ~ any_type }
+field_list         = { lcurly ~ ((field ~ comma)* ~ field?) ~ rcurly }
+struct_declaration = { struct ~ identifier ~ field_list }
+
+// Type declaration (alias)
+
+type_declaration = { type ~ identifier ~ equals ~ any_type ~ semicolon }
+
+// Module declaration
+
+module_declaration = { mod ~ identifier ~ ((lcurly ~ global_declaration* ~ rcurly) | semicolon) }
+
+// Use declaration
+
+use_declaration = { use ~ path ~ ("::" ~ asterisk)? ~ semicolon }
+
+// General declarations
+
+global_declaration = { global_var_decl | func_declaration | struct_declaration | type_declaration | module_declaration | use_declaration }
+
+// Program & Modules
+
+program = _{ SOI ~ global_declaration* ~ EOI }
+
+// Characters
+
+SWORD      = _{ ALPHABETIC | "_" }
+WORD       = _{ ALPHABETIC | NUMBER | "_" }
+WHITESPACE = _{ " " | "\t" | NEWLINE }
+COMMENT    = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }

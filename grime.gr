@@ -1,0 +1,81 @@
+use std::*;
+use batpu;
+
+struct Unit {}
+
+struct Slice {
+	ptr: &Unit,
+	len: usize
+}
+
+const PIXEL_X: &u8 = 240;
+const PIXEL_Y: &u8 = 241;
+const DRAW_PX: &u8 = 242;
+const CLEAR_PX: &u8 = 243;
+
+fn enable_px (x: u8, y: u8) {
+	*PIXEL_X = x;
+	*PIXEL_Y = y;
+	*DRAW_PX = 0;
+}
+
+fn disable_px (x: u8, y: u8) {
+	*PIXEL_X = x;
+	*PIXEL_Y = y;
+	*CLEAR_PX = 0;
+}
+
+fn set_px (x: u8, y: u8, on: bool) {
+	*PIXEL_X = x;
+	*PIXEL_Y = y;
+	*(DRAW_PX + on) = 0;
+}
+
+struct Pos {
+	x: i8,
+	y: i8
+}
+
+fn mergesort (arr: &[i8]) {
+	if arr.len <= 1 { return; }
+	let mid = len(arr) / 2;
+	let left = arr[..mid-1];
+	let right = arr[mid..];
+	mergesort(left);
+	mergesort(right);
+	merge(arr, left, right);
+}
+
+fn merge (dst: &[i8], left: &[i8], right: &[i8]) {
+	let i = 0;
+	let j = 0;
+	let k = 0;
+	while i < len(left) && j < len(right) {
+		if left[i] <= right[j] {
+			dst[k] = left[i];
+			i = i + 1;
+			k = k + 1;
+		}
+		else {
+			dst[k] = right[j];
+			j = j + 1;
+			k = k + 1;
+		}
+	}
+	while i < len(left) {
+		dst[k] = left[i];
+		i = i + 1;
+		k = k + 1;
+	}
+	while j < len(right) {
+		dst[k] = right[j];
+		j = j + 1;
+		k = k + 1;
+	}
+}
+
+fn main () {
+	let arr = [1, 0, -3, -1, 4];
+	mergesort(&arr);
+	batpu::print_number(arr[0]);
+}

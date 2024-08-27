@@ -1,0 +1,8 @@
+use batpu::print_int;
+
+fn main () {
+    let a = 10;
+    let b = 15;
+    let c = -2;
+    print_int((a >> 1) + b * c);
+}

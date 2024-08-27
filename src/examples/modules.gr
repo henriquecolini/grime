@@ -1,0 +1,8 @@
+use batpu::print_int;
+use std::*;
+
+fn main () {
+    let a = 10;
+    let b = 15;
+    print_int(mult(a, b));
+}
